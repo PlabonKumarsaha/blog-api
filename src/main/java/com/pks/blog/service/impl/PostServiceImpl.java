@@ -30,7 +30,7 @@ public class PostServiceImpl implements PostService {
         postResponse.setTitle(newPost.getTitle());
         postResponse.setDescription(newPost.getDescription());
         postResponse.setContent(newPost.getContent());
-        
+
         return postResponse;
     }
 }
