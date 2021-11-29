@@ -2,6 +2,7 @@ package com.pks.blog.service.impl;
 
 import com.pks.blog.dto.PostDTO;
 import com.pks.blog.entity.Post;
+import com.pks.blog.exceptions.ResourceNotFoundException;
 import com.pks.blog.repository.PostRepository;
 import com.pks.blog.service.PostService;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,12 @@ public class PostServiceImpl implements PostService {
     public List<PostDTO> getAllPost() {
         List<Post> posts = postRepository.findAll();
         return posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+    }
+
+    @Override
+    public PostDTO getPostById(long id) {
+        Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("post","id","id"));
+        return mapToDTO(post);
     }
 
     private PostDTO mapToDTO(Post post){
