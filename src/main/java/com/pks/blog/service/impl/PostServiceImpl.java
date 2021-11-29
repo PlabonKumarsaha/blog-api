@@ -1,6 +1,7 @@
 package com.pks.blog.service.impl;
 
 import com.pks.blog.dto.PostDTO;
+import com.pks.blog.dto.PostResponse;
 import com.pks.blog.entity.Post;
 import com.pks.blog.exceptions.ResourceNotFoundException;
 import com.pks.blog.repository.PostRepository;
@@ -36,7 +37,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getAllPost(int pageNo, int pageSize) {
+    public PostResponse getAllPost(int pageNo, int pageSize) {
 
         //create pageable object
         Pageable pageable = PageRequest.of(pageNo,pageSize);
@@ -45,7 +46,17 @@ public class PostServiceImpl implements PostService {
         //get content of page object
         List<Post>postList = posts.getContent();
 
-        return postList.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+        List<PostDTO>content= postList.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setLast(posts.isLast());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setPageNo(posts.getNumber());
+
+
+        return postResponse;
     }
 
     @Override
