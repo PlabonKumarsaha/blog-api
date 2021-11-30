@@ -3,10 +3,13 @@ package com.pks.blog.service.impl;
 import com.pks.blog.dto.CommentDto;
 import com.pks.blog.entity.Comment;
 import com.pks.blog.entity.Post;
+import com.pks.blog.exceptions.BlogAPIException;
 import com.pks.blog.exceptions.ResourceNotFoundException;
 import com.pks.blog.repository.CommentRepository;
 import com.pks.blog.repository.PostRepository;
 import com.pks.blog.service.CommentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +43,42 @@ public class CommentServiceImpl implements CommentService {
         List<Comment>comments = commentRepository.findByPostId(postId);
         //converting to dto
         return comments.stream().map(comment -> mapToCommentDto(comment)).collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto getCommentById(long postId, Long commentId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new ResourceNotFoundException("comment","id",String.valueOf(postId)));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()-> new ResourceNotFoundException("comment","id",String.valueOf(commentId)));
+
+        if (!comment.getPost().getId().equals(post.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Comments not from this post");
+        }
+
+        return mapToCommentDto(comment);
+    }
+
+    @Override
+    public CommentDto updateComment(long postId, Long commentId, CommentDto commentDto) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new ResourceNotFoundException("comment","id",String.valueOf(postId)));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()-> new ResourceNotFoundException("comment","id",String.valueOf(commentId)));
+
+        if (!comment.getPost().getId().equals(post.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Comments not from this post");
+        }
+        comment.setName(commentDto.getName());
+        comment.setBody(commentDto.getBody());
+        comment.setEmail(commentDto.getEmail());
+
+        Comment updatedComment = commentRepository.save(comment);
+
+        return mapToCommentDto(updatedComment);
     }
 
     private CommentDto mapToCommentDto(Comment comment){
