@@ -1,5 +1,6 @@
 package com.pks.blog.controller;
 
+import com.pks.blog.Utils.AppConstants;
 import com.pks.blog.dto.PostDTO;
 import com.pks.blog.dto.PostResponse;
 import com.pks.blog.entity.Post;
@@ -28,10 +29,10 @@ public class PostController {
 
     //get all post
     @GetMapping()
-    public PostResponse getAllPost(@RequestParam(value = "pageNo",defaultValue = "0",required = false) int  pageNo,
-                                   @RequestParam(value = "pageSize",defaultValue = "10",required = false) int  pageSize,
-                                   @RequestParam(value = "sortBy",defaultValue = "id",required = false) String  sortBy,
-                                   @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String  sortDirection){
+    public PostResponse getAllPost(@RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int  pageNo,
+                                   @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE,required = false) int  pageSize,
+                                   @RequestParam(value = "sortBy",defaultValue = AppConstants.DEFAULT_PAGE_SORT_BY,required = false) String  sortBy,
+                                   @RequestParam(value = "sortDir",defaultValue = AppConstants.DEFAULT_SORT_DIR,required = false) String  sortDirection){
         return postService.getAllPost(pageNo,pageSize,sortBy,sortDirection);
     }
 
