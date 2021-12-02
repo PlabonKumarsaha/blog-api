@@ -1,6 +1,9 @@
 package com.pks.blog.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,7 +42,7 @@ public class User {
         this.password = password;
     }
 
-    public User() {
+    public User(String email, String password, Collection<? extends GrantedAuthority> grantedAuthorities) {
     }
 
     public long getId() {
@@ -80,5 +83,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

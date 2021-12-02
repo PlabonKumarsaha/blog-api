@@ -63,7 +63,6 @@ public class PostServiceImpl implements PostService {
         postResponse.setTotalPages(posts.getTotalPages());
         postResponse.setPageNo(posts.getNumber());
 
-
         return postResponse;
     }
 
