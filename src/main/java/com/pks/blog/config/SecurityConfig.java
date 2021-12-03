@@ -1,8 +1,11 @@
 package com.pks.blog.config;
 
+import com.pks.blog.security.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +23,10 @@ import java.lang.reflect.Method;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // this is for method level security
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
 
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -39,17 +46,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails pks = User.builder()
-                .username("pks")
-                .password(passwordEncoder().encode("pks"))
-                .roles("USER").build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("admin"))
-                .roles("ADMIN").build();
-        return new InMemoryUserDetailsManager(pks,admin);
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
+    // This code was for in memory authentication .
+//    @Override
+//    @Bean
+//    protected UserDetailsService userDetailsService() {
+//        UserDetails pks = User.builder()
+//                .username("pks")
+//                .password(passwordEncoder().encode("pks"))
+//                .roles("USER").build();
+//
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder().encode("admin"))
+//                .roles("ADMIN").build();
+//        return new InMemoryUserDetailsManager(pks,admin);
+//    }
 }

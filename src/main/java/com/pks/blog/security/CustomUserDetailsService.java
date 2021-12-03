@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository) {
@@ -30,7 +29,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         User user = userRepository.findByUserNameOrEmailId(usernameOrEmail,usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with user name or email"+usernameOrEmail));
-       return new org.springframework.security.core.userdetails.User(user.getEmail(),
+        System.out.println(user.getEmail());
+        System.out.println(user.getPassword());
+        System.out.println(user.getUserName());
+
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),
                user.getPassword(),mapRolesToAuthority(user.getRoles()));
     }
 
