@@ -6,6 +6,8 @@ import com.pks.blog.entity.Role;
 import com.pks.blog.entity.User;
 import com.pks.blog.repository.RoleRepository;
 import com.pks.blog.repository.UserRepository;
+import com.pks.blog.security.JwtAuthResponse;
+import com.pks.blog.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +37,17 @@ public class AuthController {
     RoleRepository roleRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/signin")
-    ResponseEntity<String>autenticateUser(@RequestBody LoginDTO loginDTO){
+    ResponseEntity<JwtAuthResponse>autenticateUser(@RequestBody LoginDTO loginDTO){
         Authentication authentication =authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDTO.getUsernameOrEmail(),loginDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("User signed in sucessfully", HttpStatus.OK);
+        //get token from tokenProvider class
+        String token = jwtTokenProvider.generateToken(authentication);
+        return  ResponseEntity.ok(new JwtAuthResponse(token));
     }
 
     @PostMapping("/signup")

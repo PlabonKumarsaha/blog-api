@@ -1,12 +1,14 @@
 package com.pks.blog.security;
 
+import org.springframework.stereotype.Component;
+
+
 public class JwtAuthResponse {
     private String accessToken;
     private String tokenType = "Bearer";
 
-    public JwtAuthResponse(String accessToken, String tokenType) {
+    public JwtAuthResponse(String accessToken) {
         this.accessToken = accessToken;
-        this.tokenType = tokenType;
     }
 
     public JwtAuthResponse() {

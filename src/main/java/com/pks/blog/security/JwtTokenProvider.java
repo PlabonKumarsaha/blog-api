@@ -1,32 +1,32 @@
 package com.pks.blog.security;
 
 import com.pks.blog.exceptions.BlogAPIException;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class JwtTokenProvider {
 
     @Value("${app.jwt-secret}")
     private String jwtSecret;
-    @Value("${app.jwt-expiration-miliseconds}")
-    private String jwtexpirationInMS;
+    @Value("${app.jwt-expiration-milliseconds}")
+    private int jwtexpirationInMS;
 
-    private String generateToken(Authentication authentication) {
-        String userName = authentication.getName();
+    public String generateToken(Authentication authentication) {
+        String username = authentication.getName();
         Date currentDate = new Date();
-        Date expirationDate = new Date(currentDate.getTime()+jwtexpirationInMS);
+        Date expireDate = new Date(currentDate.getTime() + jwtexpirationInMS);
 
         String token = Jwts.builder()
-                .setSubject(userName)
+                .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512,jwtSecret)
+                .setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
         return token;
     }
@@ -42,11 +42,19 @@ public class JwtTokenProvider {
 
     //validate JWT token
     public boolean validateToken(String token) {
-        try {
+        try{
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
-        }catch (Exception e){
-        throw new BlogAPIException(HttpStatus.BAD_REQUEST,"JWT claims error");
+        }catch (SignatureException ex){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Invalid JWT signature");
+        } catch (MalformedJwtException ex) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Invalid JWT token");
+        } catch (ExpiredJwtException ex) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Expired JWT token");
+        } catch (UnsupportedJwtException ex) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Unsupported JWT token");
+        } catch (IllegalArgumentException ex) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "JWT claims string is empty.");
         }
     }
 
