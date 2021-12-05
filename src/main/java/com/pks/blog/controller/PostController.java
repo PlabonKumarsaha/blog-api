@@ -3,7 +3,6 @@ package com.pks.blog.controller;
 import com.pks.blog.Utils.AppConstants;
 import com.pks.blog.dto.PostDTO;
 import com.pks.blog.dto.PostResponse;
-import com.pks.blog.entity.Post;
 import com.pks.blog.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -29,7 +27,6 @@ public class PostController {
     public ResponseEntity<PostDTO>createPost(@Valid @RequestBody PostDTO postDTO){
     return new ResponseEntity<>(postService.createPost(postDTO), HttpStatus.CREATED);
     }
-
     //get all post
     @GetMapping()
     public PostResponse getAllPost(@RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int  pageNo,
