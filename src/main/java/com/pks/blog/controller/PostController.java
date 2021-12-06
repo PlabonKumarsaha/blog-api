@@ -4,6 +4,8 @@ import com.pks.blog.Utils.AppConstants;
 import com.pks.blog.dto.PostDTO;
 import com.pks.blog.dto.PostResponse;
 import com.pks.blog.service.PostService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Api(value = "this is a post controller where the post realted CRUD is done")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -22,12 +25,14 @@ public class PostController {
     }
 
     //create blog post
+    @ApiOperation(value = "API for creating a Post in the blog")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<PostDTO>createPost(@Valid @RequestBody PostDTO postDTO){
     return new ResponseEntity<>(postService.createPost(postDTO), HttpStatus.CREATED);
     }
     //get all post
+    @ApiOperation(value = "API for getting all the Post in the blog")
     @GetMapping()
     public PostResponse getAllPost(@RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int  pageNo,
                                    @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE,required = false) int  pageSize,
