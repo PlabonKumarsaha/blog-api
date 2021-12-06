@@ -40,7 +40,7 @@ public class PostController {
     public PostResponse getAllPostv2(@RequestParam(value = "pageNo",defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,required = false) int  pageNo,
                                    @RequestParam(value = "pageSize",defaultValue = AppConstants.DEFAULT_PAGE_SIZE,required = false) int  pageSize,
                                    @RequestParam(value = "sortBy",defaultValue = AppConstants.DEFAULT_PAGE_SORT_BY,required = false) String  sortBy,
-                                   @RequestParam(value = "sortDir",defaultValue = AppConstants.DEFAULT_SORT_DIR,required = false) String  sortDirection,
+                                   @RequestParam(value = "sortDir",defaultValue = AppConstants.DEFAULT_SORT_DIR,required = false) String  sortDirection
                                      ){
         return postService.getAllPost(pageNo,pageSize,sortBy,sortDirection);
     }
